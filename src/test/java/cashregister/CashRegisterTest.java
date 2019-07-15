@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -73,13 +74,17 @@ public class CashRegisterTest {
                 new Item("C",3),
         });
         Printer printer = mock(Printer.class);
+        CashRegister cashRegister = new CashRegister(printer);
 
         //when
-        CashRegister cashRegister = new CashRegister(printer);
         cashRegister.process(purchase);
 
         //then
-        verify(printer).print("A\t1.0\nB\t2.0\nC\t3.0\n");
+        //verify(printer).print("A\t1.0\nB\t2.0\nC\t3.0\n");
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        verify(printer).print(captor.capture());
+        Assertions.assertEquals("A\t1.0\nB\t2.0\nC\t3.0\n",captor.getValue());
+
     }
 
 }
